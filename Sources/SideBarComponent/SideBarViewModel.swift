@@ -15,7 +15,7 @@ public struct SideBarViewModel: Hashable {
     var id: UUID = UUID()
     var view: AnyView
     var category: String
-    init(category: String, view: AnyView) {
+    public init(category: String, view: AnyView) {
         self.category = category
         self.view = view
     }
