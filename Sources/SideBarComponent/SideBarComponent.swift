@@ -9,7 +9,7 @@ public protocol SideBarConfigurable: ObservableObject {
 public struct SidebarComponent<Provider: SideBarConfigurable>: View {
     @StateObject public var dataProvider: Provider
     @State var selectedView: AnyView = AnyView(EmptyView())
-    @State var index = 3
+    @State var index = 0
     var title: String
     
     public init(dataProvider: Provider, title: String) {
@@ -40,14 +40,15 @@ public struct SidebarComponent<Provider: SideBarConfigurable>: View {
                         .padding(.top, 80)
                     }
                 }
+                .padding(.leading, 15)
             }
             .padding(.vertical)
-            .frame(width: 85)
+            .frame(width: 50)
             .background(Color.clear)
             .onAppear {
-                if let firstView = dataProvider.categories.first?.view {
-                    index = 0
-                    selectedView = firstView
+                if let displayView = dataProvider.categories.last?.view {
+                    index = dataProvider.categories.count - 1
+                    selectedView = displayView
                 } else {
                     selectedView = AnyView(EmptyView())
                 }
@@ -57,16 +58,17 @@ public struct SidebarComponent<Provider: SideBarConfigurable>: View {
                 
                 HStack {
                     Spacer(minLength: reader.size.width * 0.1)
-                    Text("Cocktails")
-                    Spacer(minLength: reader.size.width * 0.5)
+                    Text(title)
+                        .font(.system(size: 20,weight: .bold))
+                    Spacer(minLength: reader.size.width * 0.45)
                 }
                 .padding(.top, 60)
                 
                 VStack {
                     selectedView
-                        .padding(.trailing, 5)
+//                        .padding(.trailing, 5)
                 }
-                .padding(.top, 150)
+                .padding(.top, 100)
             }
         }
         .edgesIgnoringSafeArea(.all)
