@@ -45,7 +45,7 @@ public struct SidebarComponent<Provider: SideBarConfigurable>: View {
             .padding(.vertical)
             .frame(width: 50)
             .background(Color.clear)
-            .onAppear {
+            .onFirstAppear {
                 if let displayView = dataProvider.categories.last?.view {
                     index = dataProvider.categories.count - 1
                     selectedView = displayView
@@ -72,5 +72,29 @@ public struct SidebarComponent<Provider: SideBarConfigurable>: View {
             }
         }
         .edgesIgnoringSafeArea(.all)
+    }
+}
+
+@available(iOS 13.0.0, *)
+extension View {
+    func onFirstAppear(_ action: @escaping () -> ()) -> some View {
+        modifier(FirstAppear(action: action))
+    }
+}
+
+@available(iOS 13.0.0, *)
+private struct FirstAppear: ViewModifier {
+    let action: () -> ()
+    
+    // Use this to only fire your block one time
+    @State private var hasAppeared = false
+    
+    func body(content: Content) -> some View {
+        // And then, track it here
+        content.onAppear {
+            guard !hasAppeared else { return }
+            hasAppeared = true
+            action()
+        }
     }
 }
